@@ -3,8 +3,9 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, MessageCircle } from "lucide-react";
 import { ButtonLink } from "@/components/ui/button";
+import { WHATSAPP_URL } from "@/lib/whatsapp";
 
 interface HeroSlide {
   eyebrow: string;
@@ -66,11 +67,11 @@ export function Hero() {
             sizes="100vw"
             className="object-cover object-[center_30%]"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#28111d]/85 via-[#28111d]/25 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#28111d]/75 via-[#28111d]/20 to-transparent" />
         </div>
         <div
           key={index}
-          className="absolute inset-x-0 bottom-24 z-10 animate-hero-in px-6 pb-10 pt-20 text-white sm:px-10 lg:left-0 lg:top-0 lg:bottom-0 lg:flex lg:h-full lg:w-[54%] lg:flex-col lg:justify-center lg:bg-transparent lg:px-14 lg:py-0 lg:text-brand-700"
+          className="absolute inset-x-0 top-8 z-10 animate-hero-in px-6 pb-10 pt-4 text-white sm:px-10 lg:left-0 lg:top-0 lg:bottom-0 lg:flex lg:h-full lg:w-[54%] lg:flex-col lg:justify-center lg:bg-transparent lg:px-14 lg:py-0 lg:text-brand-700"
         >
           <p className="text-xs font-medium uppercase tracking-[0.3em] text-white/85 lg:text-brand-700">{slide.eyebrow}</p>
           <h1 className="mt-4 font-display text-[2.7rem] font-semibold leading-[1.02] text-white sm:text-6xl lg:text-[4.1rem] lg:text-brand-700">
@@ -82,10 +83,21 @@ export function Hero() {
             {slide.text[0]}
             <br className="hidden sm:block" /> {slide.text[1]}
           </p>
-          <div className="mt-7">
+          <div className="mt-7 flex flex-col items-start gap-3">
             <ButtonLink href={slide.cta.href} size="lg">
               {slide.cta.label}
               <ArrowRight size={17} />
+            </ButtonLink>
+            <ButtonLink
+              href={WHATSAPP_URL}
+              variant="outline"
+              size="lg"
+              className="border-white/80 text-white hover:bg-white/15 hover:text-white lg:hidden"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Contact Us
+              <MessageCircle size={17} />
             </ButtonLink>
           </div>
         </div>
