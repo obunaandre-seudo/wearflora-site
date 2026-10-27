@@ -129,10 +129,7 @@ export default function AdminOrderDetailPage() {
             </div>
           )}
 
-          <div className="flex gap-2">
-            <StatusBadge status={order.status} />
-            <StatusBadge status={order.paymentStatus} />
-          </div>
+          <StatusBadge status={order.status} />
         </div>
       </div>
     </div>
