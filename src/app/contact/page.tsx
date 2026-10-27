@@ -31,8 +31,24 @@ export default function ContactPage() {
       <div className="mt-10 grid gap-10 lg:grid-cols-[1fr,1.2fr]">
         <div className="space-y-5">
           <div className="flex items-center gap-3 text-sm text-muted"><Mail size={16} className="text-brand-400" /> support@novasunhub.com</div>
-          <div className="flex items-center gap-3 text-sm text-muted"><Phone size={16} className="text-brand-400" /> +234 800 000 0000</div>
-          <div className="flex items-center gap-3 text-sm text-muted"><MapPin size={16} className="text-brand-400" /> Lagos, Nigeria</div>
+          <a
+            href="https://wa.me/2347031324811"
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center gap-3 text-sm text-muted transition hover:text-brand-500"
+          >
+            <Phone size={16} className="shrink-0 text-brand-400" />
+            +234 703 132 4811
+          </a>
+          <a
+            href="https://www.google.com/maps/search/?api=1&query=Kaura%20Market%2C%20opposite%20Prince%20and%20Princess%2C%20Abuja%2C%20Nigeria"
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center gap-3 text-sm text-muted transition hover:text-brand-500"
+          >
+            <MapPin size={16} className="shrink-0 text-brand-400" />
+            Kaura Market, opposite Prince and Princess, Abuja, Nigeria
+          </a>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4 rounded-lg border border-border bg-surface p-6">

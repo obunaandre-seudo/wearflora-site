@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 import { Plus, Trash2 } from "lucide-react";
@@ -11,7 +12,7 @@ import { Button } from "@/components/ui/button";
 interface Category { id: string; name: string; }
 interface Brand { id: string; name: string; }
 
-interface ImageRow { url: string; altText: string; isPrimary: boolean }
+interface ImageRow { url: string; altText: string; isPrimary: boolean; previewUrl?: string }
 
 export interface ProductFormValues {
   name: string;
@@ -47,10 +48,18 @@ export function ProductForm({
   const [categories, setCategories] = useState<Category[]>([]);
   const [brands, setBrands] = useState<Brand[]>([]);
   const [saving, setSaving] = useState(false);
+  const [imageFiles, setImageFiles] = useState<(File | null)[]>(() =>
+    Array.from({ length: initial?.images?.length ?? EMPTY.images.length }, () => null)
+  );
+  const previewUrls = useRef(new Set<string>());
 
   useEffect(() => {
     apiFetch<Category[]>("/api/categories").then(setCategories).catch(() => {});
     apiFetch<Brand[]>("/api/brands").then(setBrands).catch(() => {});
+  }, []);
+
+  useEffect(() => () => {
+    previewUrls.current.forEach((url) => URL.revokeObjectURL(url));
   }, []);
 
   function set<K extends keyof ProductFormValues>(key: K, value: ProductFormValues[K]) {
@@ -62,15 +71,52 @@ export function ProductForm({
   }
   function addImage() {
     set("images", [...values.images, { url: "", altText: "", isPrimary: false }]);
+    setImageFiles((files) => [...files, null]);
   }
   function removeImage(i: number) {
+    const previewUrl = values.images[i]?.previewUrl;
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+      previewUrls.current.delete(previewUrl);
+    }
     set("images", values.images.filter((_, idx) => idx !== i));
+    setImageFiles((files) => files.filter((_, idx) => idx !== i));
+  }
+
+  function chooseImage(i: number, file?: File) {
+    if (!file) return;
+    const previousPreview = values.images[i]?.previewUrl;
+    if (previousPreview) {
+      URL.revokeObjectURL(previousPreview);
+      previewUrls.current.delete(previousPreview);
+    }
+    const previewUrl = URL.createObjectURL(file);
+    previewUrls.current.add(previewUrl);
+    updateImage(i, { previewUrl });
+    setImageFiles((files) => files.map((current, idx) => idx === i ? file : current));
   }
 
   async function handleSubmit(e: React.FormEvent, statusOverride?: ProductFormValues["status"]) {
     e.preventDefault();
     setSaving(true);
     try {
+      const images = await Promise.all(values.images.map(async (image, index) => {
+        const file = imageFiles[index];
+        if (!file) {
+          return image.url.trim()
+            ? { url: image.url, altText: image.altText || undefined, isPrimary: image.isPrimary }
+            : null;
+        }
+
+        const upload = new FormData();
+        upload.set("file", file);
+        const result = await apiFetch<{ url: string }>("/api/admin/product-images", {
+          method: "POST",
+          body: upload,
+        });
+        return { url: result.url, altText: image.altText || undefined, isPrimary: image.isPrimary };
+      }));
+
       const payload = {
         name: values.name,
         sku: values.sku,
@@ -85,7 +131,7 @@ export function ProductForm({
         lowStockThreshold: Number(values.lowStockThreshold || 5),
         status: statusOverride || values.status,
         isFeatured: values.isFeatured,
-        images: values.images.filter((i) => i.url.trim()).map((i) => ({ url: i.url, altText: i.altText || undefined, isPrimary: i.isPrimary })),
+        images: images.filter((image): image is NonNullable<typeof image> => image !== null),
       };
 
       if (productId) {
@@ -161,7 +207,30 @@ export function ProductForm({
         <div className="space-y-3">
           {values.images.map((img, i) => (
             <div key={i} className="flex flex-col gap-2 rounded-xl border border-border p-3 sm:flex-row sm:items-center">
-              <Input placeholder="Image URL" value={img.url} onChange={(e) => updateImage(i, { url: e.target.value })} className="flex-1" />
+              <div className="flex flex-1 items-center gap-3">
+                {(img.previewUrl || img.url) ? (
+                  <Image
+                    src={img.previewUrl || img.url}
+                    alt={img.altText || "Product image preview"}
+                    width={56}
+                    height={56}
+                    unoptimized={Boolean(img.previewUrl)}
+                    className="h-14 w-14 rounded-lg object-cover"
+                  />
+                ) : (
+                  <div className="h-14 w-14 rounded-lg bg-surface-2" aria-hidden="true" />
+                )}
+                <label className="flex-1 cursor-pointer rounded-lg border border-border px-3 py-2 text-sm text-muted hover:bg-surface-2">
+                  {img.previewUrl ? "Choose a different image" : img.url ? "Replace image from device" : "Choose image from device"}
+                  <input
+                    id={`product-image-${i}`}
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    className="sr-only"
+                    onChange={(e) => chooseImage(i, e.currentTarget.files?.[0])}
+                  />
+                </label>
+              </div>
               <Input placeholder="Alt text" value={img.altText} onChange={(e) => updateImage(i, { altText: e.target.value })} className="sm:w-56" />
               <label className="flex items-center gap-2 text-xs text-muted whitespace-nowrap">
                 <input type="radio" name="primaryImage" checked={img.isPrimary} onChange={() => set("images", values.images.map((im, idx) => ({ ...im, isPrimary: idx === i })))} />

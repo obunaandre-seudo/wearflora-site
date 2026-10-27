@@ -9,6 +9,7 @@ build/
 # Environment variables and secrets
 .env*
 !.env.example
+.neon
 
 # Local tooling
 .vercel/

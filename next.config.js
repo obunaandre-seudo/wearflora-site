@@ -5,6 +5,7 @@ const nextConfig = {
     remotePatterns: [
       { protocol: 'https', hostname: 'images.unsplash.com' },
       { protocol: 'https', hostname: '**.novasunhub.com' },
+      { protocol: 'https', hostname: '**.neon.tech', pathname: '/product-images/**' },
     ],
   },
   eslint: { ignoreDuringBuilds: false },
