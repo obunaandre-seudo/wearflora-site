@@ -8,6 +8,8 @@ import { StatusBadge } from "@/components/order-status-badge";
 import { ButtonLink } from "@/components/ui/button";
 import { PaymentVerifier } from "@/components/orders/payment-verifier";
 
+export const dynamic = "force-dynamic";
+
 export default async function OrderDetailPage({ params }: { params: { id: string } }) {
   const user = await getCurrentUser();
   if (!user) redirect(`/login?next=/orders/${params.id}`);
@@ -95,7 +97,7 @@ export default async function OrderDetailPage({ params }: { params: { id: string
       )}
       {order.paymentStatus === "UNPAID" && order.paymentProvider !== "paystack" && (
         <p className="mt-6 text-center text-xs text-muted">
-          Payment provider isn't configured yet — this order is pending manual payment confirmation from our team.
+          Payment provider isn&apos;t configured yet — this order is pending manual payment confirmation from our team.
         </p>
       )}
       <p className="mt-3 text-center">

@@ -25,7 +25,7 @@ export default function ContactPage() {
     <div className="mx-auto max-w-4xl px-4 py-16 sm:px-6">
       <h1 className="font-display text-5xl font-semibold text-brand-700">Contact us</h1>
       <p className="mt-3 max-w-xl text-sm text-muted">
-        Questions about sizing, an existing order, or a return — send us a message and we'll get back to you.
+        Questions about sizing, an existing order, or a return — send us a message and we&apos;ll get back to you.
       </p>
 
       <div className="mt-10 grid gap-10 lg:grid-cols-[1fr,1.2fr]">

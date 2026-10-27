@@ -215,7 +215,7 @@ export default function CheckoutPage() {
               {submitting ? "Placing order…" : "Place order"}
             </Button>
             <p className="mt-3 text-center text-xs text-muted">
-              Payment is processed securely. If a payment provider isn't yet configured, your order is created as pending for manual confirmation.
+              Payment is processed securely. If a payment provider isn&apos;t yet configured, your order is created as pending for manual confirmation.
             </p>
           </div>
         </div>

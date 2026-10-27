@@ -54,7 +54,7 @@ function LoginForm() {
       </form>
 
       <p className="mt-6 text-center text-sm text-muted">
-        Don't have an account?{" "}
+        Don&apos;t have an account?{" "}
         <Link href={`/register?next=${encodeURIComponent(next)}`} className="font-medium text-brand-400 hover:underline">
           Create one
         </Link>

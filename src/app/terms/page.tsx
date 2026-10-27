@@ -6,8 +6,8 @@ export default function TermsPage() {
       <h1 className="font-display text-5xl font-semibold text-brand-700">Terms of Service</h1>
       <p className="mt-4 text-sm leading-relaxed text-muted">
         By purchasing from Wearflora, you agree to our order and return terms as described
-        on each product page and on our Shipping & returns page. Replace this placeholder with your
-        organization's full terms of service before going live.
+        on each product page and on our Shipping &amp; returns page. Replace this placeholder with your
+        organization&apos;s full terms of service before going live.
       </p>
     </div>
   );

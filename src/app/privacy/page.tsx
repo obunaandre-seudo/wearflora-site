@@ -8,7 +8,7 @@ export default function PrivacyPage() {
         Wearflora collects the information necessary to process orders, manage your account and
         improve our service — including your name, contact details, shipping address and order
         history. We do not sell personal data. Passwords are stored as salted hashes and are never
-        visible to our team. Replace this placeholder with your organization's full privacy policy
+        visible to our team. Replace this placeholder with your organization&apos;s full privacy policy
         before going live.
       </p>
     </div>

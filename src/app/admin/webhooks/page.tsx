@@ -35,8 +35,8 @@ export default async function AdminWebhooksPage() {
 
       {!configured && (
         <div className="mb-6 rounded-2xl border border-amber-500/30 bg-amber-500/10 p-4 text-sm text-amber-200">
-          <code className="rounded bg-black/20 px-1.5 py-0.5">PAYSTACK_SECRET_KEY</code> isn't set, so no webhook
-          deliveries can be verified yet — this table will stay empty until it's configured and Paystack's dashboard
+          <code className="rounded bg-black/20 px-1.5 py-0.5">PAYSTACK_SECRET_KEY</code> isn&apos;t set, so no webhook
+          deliveries can be verified yet — this table will stay empty until it&apos;s configured and Paystack&apos;s dashboard
           is pointed at <code className="rounded bg-black/20 px-1.5 py-0.5">/api/payments/paystack/webhook</code>.
         </div>
       )}

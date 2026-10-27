@@ -1,5 +1,5 @@
-export function formatCurrency(amount: number | string, currency = "NGN") {
-  const value = typeof amount === "string" ? Number(amount) : amount;
+export function formatCurrency(amount: number | string | { toNumber(): number }, currency = "NGN") {
+  const value = typeof amount === "string" ? Number(amount) : typeof amount === "number" ? amount : amount.toNumber();
   return new Intl.NumberFormat("en-NG", {
     style: "currency",
     currency,

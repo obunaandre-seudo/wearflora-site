@@ -5,6 +5,8 @@ import { formatCurrency, formatDate } from "@/lib/format";
 import { StatusBadge } from "@/components/order-status-badge";
 import { Badge } from "@/components/ui/badge";
 
+export const dynamic = "force-dynamic";
+
 async function getDashboardData() {
   const [totalProducts, totalCustomers, totalOrders, pendingOrders, revenueAgg, recentOrders, allProducts] =
     await Promise.all([
