@@ -15,18 +15,23 @@ export interface CartItem {
 
 interface CartState {
   items: CartItem[];
+  hasHydrated: boolean;
   addItem: (item: Omit<CartItem, "quantity">, quantity?: number) => { ok: boolean; message?: string };
   removeItem: (productId: string) => void;
   setQuantity: (productId: string, quantity: number) => { ok: boolean; message?: string };
   clear: () => void;
   subtotal: () => number;
   count: () => number;
+  setHasHydrated: (hasHydrated: boolean) => void;
 }
 
 export const useCartStore = create<CartState>()(
   persist(
     (set, get) => ({
       items: [],
+      hasHydrated: false,
+
+      setHasHydrated: (hasHydrated) => set({ hasHydrated }),
 
       addItem: (item, quantity = 1) => {
         const items = get().items;
@@ -68,6 +73,12 @@ export const useCartStore = create<CartState>()(
       subtotal: () => get().items.reduce((sum, i) => sum + i.unitPrice * i.quantity, 0),
       count: () => get().items.reduce((sum, i) => sum + i.quantity, 0),
     }),
-    { name: "nsh-cart" }
+    {
+      name: "nsh-cart",
+      onRehydrateStorage: () => (state, error) => {
+        if (error) console.error("Failed to restore the saved cart.", error);
+        state?.setHasHydrated(true);
+      },
+    }
   )
 );

@@ -10,11 +10,15 @@ import { Button, ButtonLink } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 
 export default function CartPage() {
-  const { items, removeItem, setQuantity, subtotal } = useCartStore();
+  const { items, removeItem, setQuantity, subtotal, hasHydrated } = useCartStore();
 
   function changeQty(productId: string, quantity: number) {
     const result = setQuantity(productId, quantity);
     if (!result.ok && result.message) toast.error(result.message);
+  }
+
+  if (!hasHydrated) {
+    return <div className="mx-auto max-w-6xl px-4 py-20 text-center text-sm text-muted sm:px-6">Loading your cart…</div>;
   }
 
   if (items.length === 0) {

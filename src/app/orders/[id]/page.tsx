@@ -1,12 +1,13 @@
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, MessageCircle } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
 import { formatCurrency, formatDateTime } from "@/lib/format";
 import { StatusBadge } from "@/components/order-status-badge";
 import { ButtonLink } from "@/components/ui/button";
 import { PaymentVerifier } from "@/components/orders/payment-verifier";
+import { createPaymentVerificationUrl } from "@/lib/whatsapp";
 
 export const dynamic = "force-dynamic";
 
@@ -20,6 +21,13 @@ export default async function OrderDetailPage({ params }: { params: { id: string
   });
 
   if (!order || (order.userId !== user.id && user.role !== "ADMIN")) notFound();
+
+  const paymentVerificationUrl = createPaymentVerificationUrl({
+    orderNumber: order.orderNumber,
+    customerName: order.address?.fullName ?? user.name,
+    total: formatCurrency(order.total, order.currency),
+    items: order.items.map((item) => `${item.productName} × ${item.quantity}`),
+  });
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6">
@@ -81,6 +89,22 @@ export default async function OrderDetailPage({ params }: { params: { id: string
               {order.address.fullName}, {order.address.line1}
               {order.address.line2 ? `, ${order.address.line2}` : ""}, {order.address.city}, {order.address.state}, {order.address.country}
             </p>
+          </div>
+        )}
+        {order.paymentStatus === "UNPAID" && (
+          <div className="mt-6 border-t border-border pt-5 text-center">
+            <p className="text-sm text-muted">
+              After completing your payment, send your order details to Wearflora for confirmation.
+            </p>
+            <a
+              href={paymentVerificationUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-4 inline-flex h-12 items-center justify-center gap-2 rounded-full bg-[#e1306c] px-6 text-sm font-medium text-white shadow-[0_8px_24px_rgba(225,48,108,0.3)] transition hover:bg-[#c92b60]"
+            >
+              <MessageCircle size={18} aria-hidden="true" />
+              Verify payment on WhatsApp
+            </a>
           </div>
         )}
       </div>

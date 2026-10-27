@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { CheckCircle2, MessageCircle } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { useCartStore } from "@/store/cart-store";
 import { useCurrentUser } from "@/lib/use-current-user";
@@ -10,14 +10,26 @@ import { formatCurrency } from "@/lib/format";
 import { Input, Label, Textarea } from "@/components/ui/input";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
+import { createPaymentVerificationUrl } from "@/lib/whatsapp";
 
 const SHIPPING_FEE = 5000;
 
+interface CheckoutOrder {
+  order: {
+    id: string;
+    orderNumber: string;
+    total: number | string;
+    currency: string;
+    items: { id: string; productName: string; quantity: number; lineTotal: number | string }[];
+  };
+  payment: { provider: string | null; authorizationUrl?: string; message?: string };
+}
+
 export default function CheckoutPage() {
-  const router = useRouter();
-  const { items, subtotal, clear } = useCartStore();
+  const { items, subtotal, clear, hasHydrated } = useCartStore();
   const { user, loading: userLoading } = useCurrentUser();
   const [submitting, setSubmitting] = useState(false);
+  const [checkoutOrder, setCheckoutOrder] = useState<CheckoutOrder | null>(null);
 
   const [form, setForm] = useState({
     fullName: "",
@@ -59,19 +71,15 @@ export default function CheckoutPage() {
     );
   }
 
-  if (items.length === 0) {
-    return (
-      <div className="mx-auto max-w-lg px-4 py-20 sm:px-6">
-        <EmptyState title="Your cart is empty" description="Add a product before checking out." action={<ButtonLink href="/products">Shop products</ButtonLink>} />
-      </div>
-    );
+  if (!hasHydrated) {
+    return <div className="mx-auto max-w-6xl px-4 py-20 text-center text-sm text-muted sm:px-6">Loading your cart…</div>;
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSubmitting(true);
     try {
-      const result = await apiFetch<{ order: { id: string }; payment: { provider: string | null; authorizationUrl?: string; message?: string } }>(
+      const result = await apiFetch<CheckoutOrder>(
         "/api/checkout",
         {
           method: "POST",
@@ -91,20 +99,14 @@ export default function CheckoutPage() {
             contactPhone: form.phone,
             notes: form.notes || undefined,
             discountCode: form.discountCode || undefined,
+            items: items.map(({ productId, quantity }) => ({ productId, quantity })),
           }),
         }
       );
 
       clear();
-
-      if (result.payment.provider === "paystack" && result.payment.authorizationUrl) {
-        toast.success("Redirecting you to Paystack to complete payment…");
-        window.location.href = result.payment.authorizationUrl;
-        return;
-      }
-
-      toast.success("Order placed! We'll confirm payment shortly.");
-      router.push(`/orders/${result.order.id}`);
+      setCheckoutOrder(result);
+      toast.success("Order placed. Review your payment options below.");
     } catch (err) {
       const message = err instanceof ClientApiError ? err.message : "Checkout failed. Please try again.";
       toast.error(message);
@@ -114,6 +116,86 @@ export default function CheckoutPage() {
   }
 
   const total = subtotal() + SHIPPING_FEE;
+
+  if (checkoutOrder) {
+    const { order, payment } = checkoutOrder;
+    const totalDisplay = formatCurrency(order.total, order.currency);
+    const verificationUrl = createPaymentVerificationUrl({
+      orderNumber: order.orderNumber,
+      customerName: form.fullName,
+      total: totalDisplay,
+      items: order.items.map((item) => `${item.productName} × ${item.quantity}`),
+    });
+
+    return (
+      <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
+        <div className="text-center">
+          <CheckCircle2 size={44} className="mx-auto text-emerald-500" aria-hidden="true" />
+          <h1 className="mt-4 font-display text-4xl font-semibold text-brand-700">Order placed</h1>
+          <p className="mt-2 text-sm text-muted">
+            Order <span className="font-mono text-text">{order.orderNumber}</span> · Total {totalDisplay}
+          </p>
+        </div>
+
+        <div className="mt-8 grid gap-6 sm:grid-cols-2">
+          <section className="rounded-2xl border border-border bg-surface p-6">
+            <h2 className="font-display text-xl font-semibold text-brand-700">Your contact details</h2>
+            <p className="mt-3 text-sm text-text">{form.fullName}</p>
+            <p className="mt-1 text-sm text-muted">{form.contactEmail}</p>
+            <p className="mt-1 text-sm text-muted">{form.phone}</p>
+            <p className="mt-3 text-sm leading-relaxed text-muted">
+              {form.line1}{form.line2 ? `, ${form.line2}` : ""}, {form.city}, {form.state}
+            </p>
+          </section>
+
+          <section className="rounded-2xl border border-border bg-surface p-6">
+            <h2 className="font-display text-xl font-semibold text-brand-700">Order details</h2>
+            <ul className="mt-3 space-y-2 text-sm">
+              {order.items.map((item) => (
+                <li key={item.id} className="flex justify-between gap-4">
+                  <span className="text-muted">{item.productName} × {item.quantity}</span>
+                  <span className="shrink-0 text-text">{formatCurrency(item.lineTotal, order.currency)}</span>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-4 border-t border-border pt-3 text-right font-semibold text-text">{totalDisplay}</p>
+          </section>
+        </div>
+
+        <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
+          {payment.authorizationUrl && (
+            <ButtonLink href={payment.authorizationUrl} target="_blank" rel="noopener noreferrer" size="lg">
+              Pay securely
+            </ButtonLink>
+          )}
+          <ButtonLink
+            href={verificationUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            size="lg"
+            variant="secondary"
+          >
+            <MessageCircle size={18} />
+            Verify payment on WhatsApp
+          </ButtonLink>
+          <ButtonLink href={`/orders/${order.id}`} variant="outline" size="lg">
+            View order
+          </ButtonLink>
+        </div>
+        {!payment.authorizationUrl && payment.message && (
+          <p className="mt-4 text-center text-xs text-muted">{payment.message}</p>
+        )}
+      </div>
+    );
+  }
+
+  if (items.length === 0) {
+    return (
+      <div className="mx-auto max-w-lg px-4 py-20 sm:px-6">
+        <EmptyState title="Your cart is empty" description="Add a product before checking out." action={<ButtonLink href="/products">Shop products</ButtonLink>} />
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">

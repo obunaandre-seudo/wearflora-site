@@ -13,19 +13,20 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
   const body = await req.json();
   const parsed = checkoutSchema.safeParse(body);
   if (!parsed.success) return fail("Invalid checkout details", 422, parsed.error.flatten());
-  const { address, contactEmail, contactPhone, notes, discountCode } = parsed.data;
+  const { address, contactEmail, contactPhone, notes, discountCode, items } = parsed.data;
 
-  const cart = await prisma.cart.findUnique({
-    where: { userId: user.id },
-    include: { items: { include: { product: true } } },
+  const products = await prisma.product.findMany({
+    where: { id: { in: items.map((item) => item.productId) } },
+  });
+  const productsById = new Map(products.map((product) => [product.id, product]));
+  const checkoutItems = items.map((item) => {
+    const product = productsById.get(item.productId);
+    if (!product) throw new ApiError("A product in your cart is no longer available.", 409);
+    return { productId: item.productId, quantity: item.quantity, product };
   });
 
-  if (!cart || cart.items.length === 0) {
-    throw new ApiError("Your cart is empty.", 400);
-  }
-
-  // Re-validate stock at time of purchase (never trust the client's snapshot).
-  for (const item of cart.items) {
+  // Validate availability and stock using current database values, never client snapshots.
+  for (const item of checkoutItems) {
     if (item.product.status !== "PUBLISHED") {
       throw new ApiError(`${item.product.name} is no longer available.`, 409);
     }
@@ -50,7 +51,7 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
     }
   }
 
-  const subtotal = cart.items.reduce((sum, item) => {
+  const subtotal = checkoutItems.reduce((sum, item) => {
     const unitPrice = Number(item.product.salePrice ?? item.product.price);
     return sum + unitPrice * item.quantity;
   }, 0);
@@ -88,7 +89,7 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
         status: "PENDING",
         paymentStatus: "UNPAID",
         items: {
-          create: cart.items.map((item) => {
+          create: checkoutItems.map((item) => {
             const unitPrice = Number(item.product.salePrice ?? item.product.price);
             return {
               productId: item.productId,
@@ -105,19 +106,27 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
     });
 
     // Reduce stock now that the order is placed (pending payment).
-    for (const item of cart.items) {
-      await tx.product.update({
-        where: { id: item.productId },
+    for (const item of checkoutItems) {
+      const stockUpdate = await tx.product.updateMany({
+        where: {
+          id: item.productId,
+          status: "PUBLISHED",
+          stockQuantity: { gte: item.quantity },
+        },
         data: { stockQuantity: { decrement: item.quantity } },
       });
+      if (stockUpdate.count !== 1) {
+        throw new ApiError(`${item.product.name} no longer has enough stock. Please review your cart and try again.`, 409);
+      }
     }
 
     if (discount) {
       await tx.discount.update({ where: { id: discount.id }, data: { timesUsed: { increment: 1 } } });
     }
 
-    // Clear the cart now that it has become an order.
-    await tx.cartItem.deleteMany({ where: { cartId: cart.id } });
+    // Clear any account-synced cart as well; the storefront cart itself is browser-persisted.
+    const cart = await tx.cart.findUnique({ where: { userId: user.id }, select: { id: true } });
+    if (cart) await tx.cartItem.deleteMany({ where: { cartId: cart.id } });
 
     return newOrder;
   });
@@ -157,7 +166,7 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
       payment: {
         provider: null,
         message:
-          "Payment provider is not yet configured. Your order has been created as PENDING — an admin can mark it PAID once payment is confirmed.",
+          "Online payment is unavailable right now. Contact Wearflora on WhatsApp to arrange payment and verify this order.",
       },
     },
     201

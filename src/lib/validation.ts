@@ -79,6 +79,17 @@ export const checkoutSchema = z.object({
   contactPhone: z.string().optional(),
   notes: z.string().optional(),
   discountCode: z.string().optional(),
+  items: z
+    .array(
+      z.object({
+        productId: z.string().min(1),
+        quantity: z.number().int().positive(),
+      })
+    )
+    .min(1)
+    .refine((items) => new Set(items.map((item) => item.productId)).size === items.length, {
+      message: "Each product may only appear once.",
+    }),
 });
 
 export const orderStatusSchema = z.object({
