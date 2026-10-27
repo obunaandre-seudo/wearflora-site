@@ -70,7 +70,7 @@ export function Hero() {
         </div>
         <div
           key={index}
-          className="absolute inset-x-0 bottom-0 z-10 animate-hero-in px-6 pb-10 pt-20 text-white sm:px-10 lg:left-0 lg:top-0 lg:flex lg:h-full lg:w-[54%] lg:flex-col lg:justify-center lg:bg-transparent lg:px-14 lg:py-0 lg:text-brand-700"
+          className="absolute inset-x-0 bottom-24 z-10 animate-hero-in px-6 pb-10 pt-20 text-white sm:px-10 lg:left-0 lg:top-0 lg:bottom-0 lg:flex lg:h-full lg:w-[54%] lg:flex-col lg:justify-center lg:bg-transparent lg:px-14 lg:py-0 lg:text-brand-700"
         >
           <p className="text-xs font-medium uppercase tracking-[0.3em] text-white/85 lg:text-brand-700">{slide.eyebrow}</p>
           <h1 className="mt-4 font-display text-[2.7rem] font-semibold leading-[1.02] text-white sm:text-6xl lg:text-[4.1rem] lg:text-brand-700">

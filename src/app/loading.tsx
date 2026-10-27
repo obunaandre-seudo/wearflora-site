@@ -1,15 +1,10 @@
-import { Skeleton } from "@/components/ui/skeleton";
-import { SolarLoader } from "@/components/ui/solar-loader";
+import { Bloom } from "@/components/ui/bloom-loader";
 
 export default function Loading() {
   return (
-    <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-      <div className="flex justify-center py-6">
-        <SolarLoader />
-      </div>
-      <Skeleton className="h-10 w-64" />
-      <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {Array.from({ length: 8 }).map((_, i) => <Skeleton key={i} className="h-72" />)}
+    <div className="grid min-h-[60vh] place-items-center">
+      <div role="status" aria-label="Loading page">
+        <Bloom size={88} showOrbit={false} />
       </div>
     </div>
   );

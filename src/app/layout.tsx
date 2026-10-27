@@ -1,12 +1,10 @@
 import type { Metadata } from "next";
-import { Suspense } from "react";
 import { Cormorant_Garamond, Jost, Pinyon_Script, JetBrains_Mono } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
-import { RouteProgressBar } from "@/components/layout/route-progress-bar";
 
 const display = Cormorant_Garamond({
   subsets: ["latin"],
@@ -62,9 +60,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className={`${display.variable} ${body.variable} ${script.variable} ${mono.variable} font-body antialiased`}>
         <ThemeProvider>
-          <Suspense fallback={null}>
-            <RouteProgressBar />
-          </Suspense>
           <Navbar />
           <main className="min-h-[60vh]">{children}</main>
           <Footer />

@@ -40,12 +40,3 @@ export function Bloom({ size = 96, showOrbit = true }: { size?: number; showOrbi
     </svg>
   );
 }
-
-export function BloomLoader({ size = 96, label = "Loading" }: { size?: number; label?: string }) {
-  return (
-    <div className="flex flex-col items-center gap-4" role="status" aria-label={label}>
-      <Bloom size={size} />
-      <span className="font-display text-xl italic text-brand-600">{label}…</span>
-    </div>
-  );
-}
