@@ -13,6 +13,17 @@
   --glow: 198 93 121;       /* primary pink #C65D79 */
 }
 
+:root.dark {
+  color-scheme: dark;
+  --bg: 25 21 25;
+  --surface: 35 29 35;
+  --surface-2: 49 39 47;
+  --border: 76 58 69;
+  --text: 246 235 239;
+  --muted: 194 176 184;
+  --glow: 226 137 160;
+}
+
 * {
   border-color: rgb(var(--border));
 }
@@ -24,7 +35,15 @@ html {
 body {
   background-color: rgb(var(--bg));
   color: rgb(var(--text));
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
+
+:root.dark .text-brand-700 { color: #f0c4d1; }
+:root.dark [class~="text-brand-700/90"] { color: rgb(240 196 209 / 0.9); }
+:root.dark .bg-brand-100 { background-color: #3b2730; }
+:root.dark .bg-brand-50 { background-color: #302129; }
+:root.dark .bg-white { background-color: rgb(var(--surface)); }
+:root.dark .text-muted { color: rgb(var(--muted)); }
 
 ::selection {
   background-color: rgb(var(--glow) / 0.25);

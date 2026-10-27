@@ -40,7 +40,7 @@ export function Hero() {
   return (
     <section className="mx-auto grid max-w-[1536px] gap-3 lg:grid-cols-[minmax(0,1fr)_28%]" aria-label="Featured">
       {/* Main slide */}
-      <div className="relative flex flex-col overflow-hidden bg-gradient-to-r from-brand-100 via-[#F6CDD5] to-[#EBB0BE] lg:block lg:h-[440px]">
+      <div className="relative flex flex-col overflow-hidden bg-gradient-to-r from-brand-100 via-[#F6CDD5] to-[#EBB0BE] dark:from-[#241a20] dark:via-[#3c2732] dark:to-[#522e3d] lg:block lg:h-[440px]">
         {[
           { cls: "left-[6%] top-[10%] h-6 w-6", d: "0s" },
           { cls: "left-[38%] top-[8%] h-4 w-4", d: "-4s" },

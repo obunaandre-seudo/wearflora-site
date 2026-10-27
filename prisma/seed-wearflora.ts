@@ -3,7 +3,7 @@
  *
  *   npm run seed:wearflora
  *
- * Adds the nine Wearflora categories and the five products shown in the homepage design,
+ * Adds the nine Wearflora categories, the five homepage products, and a clearly labeled test listing,
  * so a fresh database looks like the reference design. It only ever CREATES rows that do not
  * exist yet (upsert with an empty `update`): nothing is deleted, reset or overwritten, and
  * existing products, customers and orders are never touched.
@@ -69,6 +69,31 @@ async function main() {
         categoryId: categoryIds[p.category],
         brandId: brand.id,
         images: { create: [{ url: p.image, altText: p.name, isPrimary: true, position: 0 }] },
+      },
+    });
+  }
+
+  const testSlug = "test-product-checkout-sample";
+  const existingTestProduct = await prisma.product.findUnique({ where: { slug: testSlug } });
+  if (!existingTestProduct) {
+    await prisma.product.create({
+      data: {
+        name: "Test Product - Checkout Sample",
+        slug: testSlug,
+        sku: "WF-TEST-001",
+        description:
+          "A clearly labeled sample listing for testing product pages, wishlist, cart, and checkout. This is not a real item and must not be fulfilled.",
+        shortDescription: "Test listing only - not for fulfillment.",
+        price: 1000,
+        currency: "NGN",
+        stockQuantity: 5,
+        status: "PUBLISHED",
+        isFeatured: false,
+        categoryId: categoryIds.accessories,
+        brandId: brand.id,
+        images: {
+          create: [{ url: "/wearflora/products/p4.jpg", altText: "Test product sample", isPrimary: true, position: 0 }],
+        },
       },
     });
   }

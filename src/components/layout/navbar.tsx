@@ -4,11 +4,12 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
-import { Heart, Menu, Search, ShoppingBag, Truck, User, X } from "lucide-react";
+import { Heart, Menu, Moon, Search, ShoppingBag, Sun, Truck, User, X } from "lucide-react";
 import clsx from "clsx";
 import { Logo } from "./logo";
 import { useCartStore } from "@/store/cart-store";
 import { useCurrentUser } from "@/lib/use-current-user";
+import { useTheme } from "@/components/theme-provider";
 
 const NAV_LINKS = [
   { href: "/", label: "Home" },
@@ -32,6 +33,7 @@ export function Navbar() {
   const [mounted, setMounted] = useState(false);
   const count = useCartStore((s) => s.count());
   const { user } = useCurrentUser();
+  const { theme, toggleTheme } = useTheme();
 
   useEffect(() => setMounted(true), []);
   useEffect(() => setMobileOpen(false), [pathname]);
@@ -122,6 +124,15 @@ export function Navbar() {
           </form>
 
           <div className="ml-auto flex items-center gap-1 sm:gap-2 lg:ml-0">
+            <button
+              type="button"
+              onClick={toggleTheme}
+              className="flex h-10 w-10 items-center justify-center rounded-full text-brand-700 transition hover:bg-surface-2"
+              aria-label={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
+              title={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
+            >
+              {theme === "light" ? <Moon size={19} /> : <Sun size={19} />}
+            </button>
             <Link
               href="/products"
               className="flex h-10 w-10 items-center justify-center rounded-full text-brand-700 transition hover:bg-surface-2 xl:hidden"

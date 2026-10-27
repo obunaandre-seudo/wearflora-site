@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
+import { Bloom } from "@/components/ui/bloom-loader";
 
 /**
  * Slim top-of-page loading bar for client-side route transitions.
@@ -15,37 +16,60 @@ import { usePathname, useSearchParams } from "next/navigation";
 export function RouteProgressBar() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const [progress, setProgress] = useState(0);
-  const [visible, setVisible] = useState(false);
-  const tickRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [showOverlay, setShowOverlay] = useState(false);
   const hideTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const overlayTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isFirstRender = useRef(true);
 
   const start = useCallback(() => {
-    if (tickRef.current) return; // already in progress
     if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
-    setVisible(true);
-    setProgress(12);
-    // Creeps toward — but never reaches — 90%, so it always looks like it's
-    // making progress without ever falsely claiming to be finished.
-    tickRef.current = setInterval(() => {
-      setProgress((p) => (p >= 90 ? p : p + Math.random() * 10));
-    }, 200);
+    if (overlayTimeoutRef.current) clearTimeout(overlayTimeoutRef.current);
+    overlayTimeoutRef.current = setTimeout(() => setShowOverlay(true), 220);
   }, []);
 
   const finish = useCallback(() => {
-    if (tickRef.current) {
-      clearInterval(tickRef.current);
-      tickRef.current = null;
+    if (overlayTimeoutRef.current) {
+      clearTimeout(overlayTimeoutRef.current);
+      overlayTimeoutRef.current = null;
     }
-    setProgress((p) => (p > 0 ? 100 : p));
+    setShowOverlay(false);
     hideTimeoutRef.current = setTimeout(() => {
-      setVisible(false);
-      setProgress(0);
+      setShowOverlay(false);
     }, 250);
   }, []);
 
   useEffect(() => {
+    const handleClick = (event: MouseEvent) => {
+      if (
+        event.defaultPrevented ||
+        event.button !== 0 ||
+        event.metaKey ||
+        event.ctrlKey ||
+        event.shiftKey ||
+        event.altKey
+      ) {
+        return;
+      }
+
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      const anchor = target.closest("a[href]");
+      if (!(anchor instanceof HTMLAnchorElement) || anchor.target === "_blank") return;
+
+      const destination = new URL(anchor.href, window.location.href);
+      if (
+        destination.origin !== window.location.origin ||
+        (destination.pathname === window.location.pathname &&
+          destination.search === window.location.search)
+      ) {
+        return;
+      }
+
+      start();
+    };
+
+    document.addEventListener("click", handleClick, true);
+    window.addEventListener("popstate", start);
     const originalPushState = window.history.pushState.bind(window.history);
     const originalReplaceState = window.history.replaceState.bind(window.history);
     window.history.pushState = (...args: Parameters<typeof window.history.pushState>) => {
@@ -60,6 +84,8 @@ export function RouteProgressBar() {
       return originalReplaceState(...args);
     };
     return () => {
+      document.removeEventListener("click", handleClick, true);
+      window.removeEventListener("popstate", start);
       window.history.pushState = originalPushState;
       window.history.replaceState = originalReplaceState;
     };
@@ -79,20 +105,19 @@ export function RouteProgressBar() {
 
   useEffect(
     () => () => {
-      if (tickRef.current) clearInterval(tickRef.current);
       if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
+      if (overlayTimeoutRef.current) clearTimeout(overlayTimeoutRef.current);
     },
     []
   );
 
-  if (!visible) return null;
-
   return (
-    <div className="fixed left-0 top-0 z-[100] h-[3px] w-full" aria-hidden="true">
-      <div
-        className="h-full bg-gradient-to-r from-brand-300 via-brand-400 to-solar-500 shadow-glow transition-[width] duration-200 ease-out"
-        style={{ width: `${progress}%` }}
-      />
-    </div>
+    <>
+      {showOverlay && (
+        <div className="pointer-events-none fixed inset-0 z-[90] grid place-items-center bg-bg/60 backdrop-blur-sm" role="status" aria-label="Loading page">
+          <Bloom size={88} showOrbit={false} />
+        </div>
+      )}
+    </>
   );
 }

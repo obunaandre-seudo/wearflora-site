@@ -5,10 +5,12 @@
  */
 const PETALS = [0, 72, 144, 216, 288];
 
-export function Bloom({ size = 96 }: { size?: number }) {
+export function Bloom({ size = 96, showOrbit = true }: { size?: number; showOrbit?: boolean }) {
   return (
     <svg width={size} height={size} viewBox="0 0 120 120" fill="none" aria-hidden="true" className="wf-bloom overflow-visible">
-      <circle cx="60" cy="60" r="54" stroke="#C9A46A" strokeOpacity="0.45" strokeWidth="0.8" strokeDasharray="1.5 5" className="wf-orbit" />
+      {showOrbit && (
+        <circle cx="60" cy="60" r="54" stroke="#C9A46A" strokeOpacity="0.45" strokeWidth="0.8" strokeDasharray="1.5 5" className="wf-orbit" />
+      )}
       <g className="wf-flower">
         {PETALS.map((deg, i) => (
           <g key={deg} transform={`rotate(${deg} 60 60)`}>

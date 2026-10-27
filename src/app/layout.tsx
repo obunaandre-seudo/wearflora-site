@@ -6,7 +6,6 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
-import { IntroSplash } from "@/components/layout/intro-splash";
 import { RouteProgressBar } from "@/components/layout/route-progress-bar";
 
 const display = Cormorant_Garamond({
@@ -59,12 +58,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        {/* Skips the one-time intro on repeat visits in the same session (no flash). */}
-        <script dangerouslySetInnerHTML={{ __html: "try{if(sessionStorage.getItem('wf-intro-seen'))document.documentElement.classList.add('wf-seen')}catch(e){}" }} />
+        <script dangerouslySetInnerHTML={{ __html: "try{if(localStorage.getItem('wf-theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}" }} />
       </head>
       <body className={`${display.variable} ${body.variable} ${script.variable} ${mono.variable} font-body antialiased`}>
         <ThemeProvider>
-          <IntroSplash />
           <Suspense fallback={null}>
             <RouteProgressBar />
           </Suspense>
