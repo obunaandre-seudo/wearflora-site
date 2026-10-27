@@ -16,7 +16,6 @@ interface AdminOrder {
   id: string;
   orderNumber: string;
   status: string;
-  paymentStatus: string;
   total: string;
   createdAt: string;
   user: { name: string; email: string };
@@ -71,7 +70,7 @@ function AdminOrdersPageInner() {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="font-display text-2xl font-semibold text-text">Orders</h1>
-          <p className="mt-1 text-sm text-muted">Track fulfillment and payment status across all orders.</p>
+          <p className="mt-1 text-sm text-muted">Track fulfillment status across all orders.</p>
         </div>
         <Select value={status} onChange={(e) => { setStatus(e.target.value); setPage(1); }} className="w-auto">
           <option value="">All statuses</option>
@@ -86,14 +85,13 @@ function AdminOrdersPageInner() {
               <th className="px-5 py-3 font-medium">Order</th>
               <th className="px-5 py-3 font-medium">Customer</th>
               <th className="px-5 py-3 font-medium">Total</th>
-              <th className="px-5 py-3 font-medium">Payment</th>
               <th className="px-5 py-3 font-medium">Status</th>
               <th className="px-5 py-3 font-medium">Update</th>
             </tr>
           </thead>
           <tbody>
-            {loading && <tr><td colSpan={6} className="px-5 py-10 text-center text-muted">Loading orders…</td></tr>}
-            {!loading && items.length === 0 && <tr><td colSpan={6} className="px-5 py-10 text-center text-muted">No orders found</td></tr>}
+            {loading && <tr><td colSpan={5} className="px-5 py-10 text-center text-muted">Loading orders…</td></tr>}
+            {!loading && items.length === 0 && <tr><td colSpan={5} className="px-5 py-10 text-center text-muted">No orders found</td></tr>}
             {!loading && items.map((o) => (
               <tr key={o.id} className="border-b border-border last:border-0 hover:bg-surface-2/60">
                 <td className="px-5 py-3">
@@ -105,7 +103,6 @@ function AdminOrdersPageInner() {
                   <p className="text-xs text-muted">{o.user?.email}</p>
                 </td>
                 <td className="px-5 py-3 font-medium text-text">{formatCurrency(o.total)}</td>
-                <td className="px-5 py-3"><StatusBadge status={o.paymentStatus} /></td>
                 <td className="px-5 py-3"><StatusBadge status={o.status} /></td>
                 <td className="px-5 py-3">
                   <Select value={o.status} onChange={(e) => updateStatus(o.id, e.target.value)} className="w-auto py-1.5 text-xs">
