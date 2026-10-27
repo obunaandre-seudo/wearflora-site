@@ -23,28 +23,22 @@ function specs(pairs: [string, string][]) {
 async function main() {
   console.log("Seeding NovaSunHub database…");
 
-  // --- Admin + demo customer ---
-  const adminPasswordHash = await bcrypt.hash("Admin@12345", 12);
-  const admin = await prisma.user.upsert({
-    where: { email: "admin@novasunhub.com" },
+  // --- Admin bootstrap ---
+  const adminEmail = process.env.BOOTSTRAP_ADMIN_EMAIL?.trim().toLowerCase();
+  const adminPassword = process.env.BOOTSTRAP_ADMIN_PASSWORD;
+  if (!adminEmail || !adminPassword || adminPassword.length < 16) {
+    throw new Error("Set BOOTSTRAP_ADMIN_EMAIL and a BOOTSTRAP_ADMIN_PASSWORD of at least 16 characters before seeding.");
+  }
+
+  const adminPasswordHash = await bcrypt.hash(adminPassword, 12);
+  await prisma.user.upsert({
+    where: { email: adminEmail },
     update: {},
     create: {
-      name: "NovaSunHub Admin",
-      email: "admin@novasunhub.com",
+      name: "Wearflora Admin",
+      email: adminEmail,
       passwordHash: adminPasswordHash,
       role: "ADMIN",
-    },
-  });
-
-  const customerPasswordHash = await bcrypt.hash("Customer@12345", 12);
-  await prisma.user.upsert({
-    where: { email: "demo@novasunhub.com" },
-    update: {},
-    create: {
-      name: "Demo Customer",
-      email: "demo@novasunhub.com",
-      passwordHash: customerPasswordHash,
-      role: "CUSTOMER",
     },
   });
 
@@ -286,8 +280,7 @@ async function main() {
     });
   }
 
-  console.log(`Seed complete. Admin login: admin@novasunhub.com / Admin@12345`);
-  console.log(`Demo customer login: demo@novasunhub.com / Customer@12345`);
+  console.log("Seed complete. Admin account provisioned without printing credentials.");
   console.log(`These are demo/seed products, not yet connected to a live supplier API.`);
 }
 

@@ -52,7 +52,7 @@ This is a real application — not a static mockup. Every page listed below read
 novasunhub/
 ├── prisma/
 │   ├── schema.prisma        # Full data model (users, products, orders, etc.)
-│   └── seed.ts               # Demo solar products, categories, brands, admin/demo accounts
+│   └── seed.ts               # Demo solar products, categories, brands, environment-configured admin
 ├── src/
 │   ├── app/
 │   │   ├── api/               # All backend route handlers
@@ -105,14 +105,15 @@ Secrets are never imported into client components and are never returned by any 
 ```bash
 npm install
 npx prisma migrate dev --name init   # creates tables in your PostgreSQL database
-npm run seed                         # loads demo products, categories, admin + demo accounts
+npm run seed                         # loads demo data; requires private BOOTSTRAP_ADMIN_* values
 ```
 
 **Using Neon (or any pooled PostgreSQL provider)?** Set `DATABASE_URL` to the pooled connection string and `DATABASE_URL_DIRECT` to the non-pooled one (`prisma/schema.prisma` uses `directUrl` for this) — poolers like PgBouncer in transaction mode don't reliably support the prepared statements `prisma migrate` needs, so migrations run over the direct connection while the app itself uses the pooled one at runtime. If you'd rather skip migration history and just sync the schema straight to a fresh database (fine for a new Neon project, not recommended once you have real data), `npm run prisma:push` does that in one step.
 
-Demo accounts created by the seed script:
-- **Admin:** `admin@novasunhub.com` / `Admin@12345`
-- **Customer:** `demo@novasunhub.com` / `Customer@12345`
+To seed products and create an administrator, set `BOOTSTRAP_ADMIN_EMAIL` and a unique
+`BOOTSTRAP_ADMIN_PASSWORD` (at least 16 characters) in your local environment before running
+`npm run seed`. The seed script does not print the password. Keep these bootstrap values private
+and do not add them to source control.
 
 ---
 

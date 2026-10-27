@@ -40,7 +40,7 @@ export function Hero() {
   return (
     <section className="mx-auto grid max-w-[1536px] gap-3 lg:grid-cols-[minmax(0,1fr)_28%]" aria-label="Featured">
       {/* Main slide */}
-      <div className="relative flex flex-col overflow-hidden bg-gradient-to-r from-brand-100 via-[#F6CDD5] to-[#EBB0BE] dark:from-[#241a20] dark:via-[#3c2732] dark:to-[#522e3d] lg:block lg:h-[440px]">
+      <div className="relative flex min-h-[680px] flex-col overflow-hidden bg-gradient-to-r from-brand-100 via-[#F6CDD5] to-[#EBB0BE] dark:from-[#241a20] dark:via-[#3c2732] dark:to-[#522e3d] lg:block lg:h-[440px] lg:min-h-0">
         {[
           { cls: "left-[6%] top-[10%] h-6 w-6", d: "0s" },
           { cls: "left-[38%] top-[8%] h-4 w-4", d: "-4s" },
@@ -57,17 +57,28 @@ export function Hero() {
             <path d="M12 2c5 4 7 9 0 20C5 11 7 6 12 2Z" fill="#fff" fillOpacity="0.55" stroke="#C65D79" strokeOpacity="0.35" strokeWidth="0.6" />
           </svg>
         ))}
+        <div className="absolute inset-0 lg:hidden">
+          <Image
+            src="/wearflora/hero-mobile.png"
+            alt="Model wearing a pink evening dress in a floral boutique"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-[center_30%]"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#28111d]/85 via-[#28111d]/25 to-transparent" />
+        </div>
         <div
           key={index}
-          className="relative z-10 animate-hero-in px-6 pb-2 pt-10 sm:px-10 lg:absolute lg:left-0 lg:top-0 lg:flex lg:h-full lg:w-[54%] lg:flex-col lg:justify-center lg:px-14 lg:py-0"
+          className="absolute inset-x-0 bottom-0 z-10 animate-hero-in px-6 pb-10 pt-20 text-white sm:px-10 lg:left-0 lg:top-0 lg:flex lg:h-full lg:w-[54%] lg:flex-col lg:justify-center lg:bg-transparent lg:px-14 lg:py-0 lg:text-brand-700"
         >
-          <p className="text-xs font-medium uppercase tracking-[0.3em] text-brand-700">{slide.eyebrow}</p>
-          <h1 className="mt-4 font-display text-[2.7rem] font-semibold leading-[1.02] text-brand-700 sm:text-6xl lg:text-[4.1rem]">
+          <p className="text-xs font-medium uppercase tracking-[0.3em] text-white/85 lg:text-brand-700">{slide.eyebrow}</p>
+          <h1 className="mt-4 font-display text-[2.7rem] font-semibold leading-[1.02] text-white sm:text-6xl lg:text-[4.1rem] lg:text-brand-700">
             {slide.title[0]}
             <br />
             {slide.title[1]}
           </h1>
-          <p className="mt-5 max-w-md font-display text-xl leading-snug text-brand-700/90 sm:text-[1.35rem]">
+          <p className="mt-5 max-w-md font-display text-xl leading-snug text-white/90 sm:text-[1.35rem] lg:text-brand-700/90">
             {slide.text[0]}
             <br className="hidden sm:block" /> {slide.text[1]}
           </p>
@@ -79,7 +90,7 @@ export function Hero() {
           </div>
         </div>
 
-        <div className="hero-fade relative h-[380px] w-full sm:h-[460px] lg:absolute lg:inset-y-0 lg:right-0 lg:h-full lg:w-[62%]">
+        <div className="hero-fade relative hidden h-[380px] w-full sm:h-[460px] lg:absolute lg:inset-y-0 lg:right-0 lg:block lg:h-full lg:w-[62%]">
           <Image
             src={slide.image}
             alt={slide.imageAlt}

@@ -17,14 +17,19 @@ export function RouteProgressBar() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [showOverlay, setShowOverlay] = useState(false);
-  const hideTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const overlayTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const navigationTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isFirstRender = useRef(true);
 
   const start = useCallback(() => {
-    if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
     if (overlayTimeoutRef.current) clearTimeout(overlayTimeoutRef.current);
+    if (navigationTimeoutRef.current) clearTimeout(navigationTimeoutRef.current);
     overlayTimeoutRef.current = setTimeout(() => setShowOverlay(true), 220);
+    navigationTimeoutRef.current = setTimeout(() => {
+      setShowOverlay(false);
+      overlayTimeoutRef.current = null;
+      navigationTimeoutRef.current = null;
+    }, 10000);
   }, []);
 
   const finish = useCallback(() => {
@@ -32,10 +37,11 @@ export function RouteProgressBar() {
       clearTimeout(overlayTimeoutRef.current);
       overlayTimeoutRef.current = null;
     }
+    if (navigationTimeoutRef.current) {
+      clearTimeout(navigationTimeoutRef.current);
+      navigationTimeoutRef.current = null;
+    }
     setShowOverlay(false);
-    hideTimeoutRef.current = setTimeout(() => {
-      setShowOverlay(false);
-    }, 250);
   }, []);
 
   useEffect(() => {
@@ -70,6 +76,8 @@ export function RouteProgressBar() {
 
     document.addEventListener("click", handleClick, true);
     window.addEventListener("popstate", start);
+    window.addEventListener("hashchange", finish);
+    window.addEventListener("pageshow", finish);
     const originalPushState = window.history.pushState.bind(window.history);
     const originalReplaceState = window.history.replaceState.bind(window.history);
     window.history.pushState = (...args: Parameters<typeof window.history.pushState>) => {
@@ -86,10 +94,12 @@ export function RouteProgressBar() {
     return () => {
       document.removeEventListener("click", handleClick, true);
       window.removeEventListener("popstate", start);
+      window.removeEventListener("hashchange", finish);
+      window.removeEventListener("pageshow", finish);
       window.history.pushState = originalPushState;
       window.history.replaceState = originalReplaceState;
     };
-  }, [start]);
+  }, [finish, start]);
 
   useEffect(() => {
     // Skip the initial mount — there's no "navigation" to finish yet.
@@ -105,8 +115,8 @@ export function RouteProgressBar() {
 
   useEffect(
     () => () => {
-      if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
       if (overlayTimeoutRef.current) clearTimeout(overlayTimeoutRef.current);
+      if (navigationTimeoutRef.current) clearTimeout(navigationTimeoutRef.current);
     },
     []
   );
