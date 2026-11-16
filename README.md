@@ -13,4 +13,4 @@ The included `vercel.json` selects Vercel's **Express** framework. Set the proje
 - `ADMIN_EMAIL` and `ADMIN_PASSWORD` for the initial editor account (password at least 12 characters)
 - `NODE_ENV=production`
 
-Apply `database/schema.sql` to the production database before opening the newsroom. The first API request initializes the session table and creates the configured editor if one does not already exist. Article images are stored in MySQL, so they persist across serverless invocations.
+Apply `database/schema.sql` and `database/sample-data.sql` to the production database to populate the homepage with editable, clearly labeled sample stories. The first API request initializes the session table and creates the configured editor if one does not already exist. Article images are stored in MySQL, so they persist across serverless invocations.

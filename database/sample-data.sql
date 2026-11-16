@@ -20,3 +20,15 @@ INSERT INTO articles(category_id,title,slug,description,content,image_path,image
 SELECT c.id,'The infrastructure questions behind the AI investment boom','demo-ai-infrastructure','A demonstration technology feature considers power, compute and the next phase of AI investment.','This sample technology feature is fictional and is supplied for preview only. Replace it with independently reported and fact-checked content before launch.','https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1000&q=80','Electronic circuit board detail','JPMorgan Demonstration Desk','published',FALSE,NOW()-INTERVAL 4 HOUR
 FROM categories c WHERE c.slug='technology'
 ON DUPLICATE KEY UPDATE title=VALUES(title);
+INSERT INTO articles(category_id,title,slug,description,content,image_path,image_alt,author,status,is_featured,published_at)
+SELECT c.id,'SAMPLE — Add your global affairs headline','demo-global-affairs','Placeholder copy for the world coverage section. Replace this headline and standfirst in the editorial desk.','This clearly labeled demonstration story is here to fill the homepage layout while the newsroom is being prepared. Replace the headline, summary, image, and article text with verified reporting before launch.','https://images.unsplash.com/photo-1524666041070-9a8768337a64?auto=format&fit=crop&w=1000&q=80','Aerial view of a world city','JPMorgan Demonstration Desk','published',FALSE,NOW()-INTERVAL 5 HOUR
+FROM categories c WHERE c.slug='world'
+ON DUPLICATE KEY UPDATE title=VALUES(title);
+INSERT INTO articles(category_id,title,slug,description,content,image_path,image_alt,author,status,is_featured,published_at)
+SELECT c.id,'SAMPLE — Add your economy headline','demo-economy-briefing','Placeholder copy for an additional economy story. Replace this headline and standfirst in the editorial desk.','This clearly labeled demonstration story is here to fill the latest news briefing. Replace it with sourced reporting, a verified headline, and the final article copy before launch.','https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1000&q=80','Financial charts on a computer display','JPMorgan Demonstration Desk','published',FALSE,NOW()-INTERVAL 6 HOUR
+FROM categories c WHERE c.slug='economy'
+ON DUPLICATE KEY UPDATE title=VALUES(title);
+INSERT INTO articles(category_id,title,slug,description,content,image_path,image_alt,author,status,is_featured,published_at)
+SELECT c.id,'SAMPLE — Add your business headline','demo-business-briefing','Placeholder copy for a second companies story. Replace this headline and standfirst in the editorial desk.','This clearly labeled demonstration story provides another card for the home page and latest news feed. Replace it with verified business reporting before launch.','https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=1000&q=80','Sunlit modern office interior','JPMorgan Demonstration Desk','published',FALSE,NOW()-INTERVAL 7 HOUR
+FROM categories c WHERE c.slug='companies'
+ON DUPLICATE KEY UPDATE title=VALUES(title);
