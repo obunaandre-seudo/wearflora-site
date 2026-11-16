@@ -1,0 +1,50 @@
+CREATE DATABASE IF NOT EXISTS jpmorgan_news CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE jpmorgan_news;
+CREATE TABLE IF NOT EXISTS sessions (session_id VARCHAR(128) NOT NULL PRIMARY KEY,expires INT UNSIGNED NOT NULL,data MEDIUMTEXT NOT NULL,INDEX idx_sessions_expires(expires));
+CREATE TABLE IF NOT EXISTS admins (
+ id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+ email VARCHAR(254) NOT NULL UNIQUE,
+ password_hash VARCHAR(255) NOT NULL,
+ created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE IF NOT EXISTS categories (
+ id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+ name VARCHAR(60) NOT NULL UNIQUE,
+ slug VARCHAR(70) NOT NULL UNIQUE,
+ sort_order INT NOT NULL DEFAULT 0
+);
+CREATE TABLE IF NOT EXISTS articles (
+ id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+ category_id INT UNSIGNED NOT NULL,
+ title VARCHAR(240) NOT NULL,
+ slug VARCHAR(260) NOT NULL UNIQUE,
+ description VARCHAR(500) NOT NULL,
+ content MEDIUMTEXT NOT NULL,
+ image_path VARCHAR(500) NULL,
+ image_alt VARCHAR(240) NULL,
+ author VARCHAR(120) NOT NULL DEFAULT 'JPMorgan Editorial',
+ status ENUM('draft','published') NOT NULL DEFAULT 'draft',
+ is_featured BOOLEAN NOT NULL DEFAULT FALSE,
+ published_at DATETIME NULL,
+ created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+ CONSTRAINT fk_articles_category FOREIGN KEY(category_id) REFERENCES categories(id),
+ INDEX idx_articles_feed(status,published_at),
+ INDEX idx_articles_category(category_id,status)
+);
+CREATE TABLE IF NOT EXISTS contact_messages (
+ id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+ name VARCHAR(100) NOT NULL,
+ email VARCHAR(254) NOT NULL,
+ topic VARCHAR(60) NOT NULL,
+ message TEXT NOT NULL,
+ created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE IF NOT EXISTS newsletter_subscribers (
+ id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+ email VARCHAR(254) NOT NULL UNIQUE,
+ created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+INSERT IGNORE INTO categories(name,slug,sort_order) VALUES
+('Politics','politics',1),('Companies','companies',2),('Markets','markets',3),
+('Technology','technology',4),('World','world',5),('Economy','economy',6);

@@ -21,3 +21,6 @@ yarn-debug.log*
 pnpm-debug.log*
 *.tsbuildinfo
 .DS_Store
+
+public/uploads/*
+!public/uploads/.gitkeep
