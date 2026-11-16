@@ -32,6 +32,12 @@ CREATE TABLE IF NOT EXISTS articles (
  INDEX idx_articles_feed(status,published_at),
  INDEX idx_articles_category(category_id,status)
 );
+CREATE TABLE IF NOT EXISTS article_images (
+ id CHAR(36) NOT NULL PRIMARY KEY,
+ mime_type VARCHAR(40) NOT NULL,
+ image_data MEDIUMBLOB NOT NULL,
+ created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
 CREATE TABLE IF NOT EXISTS contact_messages (
  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
  name VARCHAR(100) NOT NULL,

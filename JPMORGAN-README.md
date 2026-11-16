@@ -39,8 +39,8 @@ Public data routes: `GET /api/articles`, `GET /api/articles?category=markets`, `
 
 ## Notes
 
-- Uploaded files are stored in `public/uploads`; back up that directory together with the database.
+- Uploaded image bytes are stored in the `article_images` MySQL table and served at `/api/images/:id`; back up that table together with the rest of the database.
 - Serve production traffic over HTTPS so the session cookie is marked secure.
 - The contact form opens the visitor’s email application. Newsletter subscriptions are written to MySQL.
 - Images use uploaded files when present. The home lead has an editorial city image as its visual default until an editor features a story.
-- The existing Next.js/Prisma storefront source files are left in the repository, but `npm start` and `npm run dev` now start the Express newsroom.
+- For Vercel, set the Root Directory to the folder containing `package.json`, add the environment values listed in `.env.example`, and apply `database/schema.sql` to a remotely reachable MySQL database. `vercel.json` selects Express as the framework.
