@@ -18,7 +18,7 @@ A lightweight newsroom for this repository. The public site uses HTML, CSS and v
    GRANT ALL PRIVILEGES ON jpmorgan_news.* TO 'jpmorgan_app'@'localhost';
    ```
 
-2. Apply the schema: `mysql -u root -p < database/schema.sql`. To fill the homepage and Latest News with editable demonstration stories, run `mysql -u root -p < database/sample-data.sql`. The sample headlines are explicitly labeled and can be edited or deleted in the dashboard.
+2. Apply the schema: `mysql -u root -p < database/schema.sql`. On first API access, the server adds clearly labeled demonstration stories only where a homepage section is missing or the published feed has fewer than seven stories. You can edit or delete them in the dashboard. `database/sample-data.sql` is also available for a manual preview seed.
 
 3. Copy `.env.example` to `.env`. Set MySQL connection values, a long random `SESSION_SECRET`, and an initial editor email and password (at least 12 characters). Keep `.env` private.
 
@@ -43,4 +43,4 @@ Public data routes: `GET /api/articles`, `GET /api/articles?category=markets`, `
 - Serve production traffic over HTTPS so the session cookie is marked secure.
 - The contact form opens the visitor’s email application. Newsletter subscriptions are written to MySQL.
 - Images use uploaded files when present. The home lead has an editorial city image as its visual default until an editor features a story.
-- For Vercel, set the Root Directory to the folder containing `package.json`, add the environment values listed in `.env.example`, and apply both `database/schema.sql` and `database/sample-data.sql` to a remotely reachable MySQL database. `vercel.json` selects Express as the framework.
+- For Vercel, set the Root Directory to the folder containing `package.json`, add the environment values listed in `.env.example`, and apply `database/schema.sql` to a remotely reachable MySQL database. The server will populate any missing home sections with demonstration stories on first API access. `vercel.json` selects Express as the framework.
