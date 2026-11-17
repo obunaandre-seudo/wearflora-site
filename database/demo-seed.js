@@ -1,31 +1,48 @@
-const demoArticles=[
- {category:'economy',title:'How a changing trade map is reshaping global capital',slug:'demo-global-capital',description:'An illustrative briefing on how shifting supply chains can alter the geography of investment.',content:'This demonstration story explores a broad editorial theme: the way trade routes and investment priorities evolve together. The reporting and figures in this sample are fictional and are included only to preview the publishing experience.\n\nA live newsroom would replace this copy with sourced reporting, expert interviews and clearly attributed data. Readers should treat this sample as a design demonstration, not financial guidance.',imagePath:'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1800&q=85',imageAlt:'Glass towers in a city financial district',featured:true,minutesAgo:0},
- {category:'politics',title:'Policy makers weigh the next chapter of growth',slug:'demo-policy-growth',description:'A sample politics briefing examines the choices facing public institutions in a changing economy.',content:'This demonstration article is fictional. It shows how policy coverage and economic context appear in the newsroom.\n\nReplace this sample with verified reporting before public use.',imagePath:'https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?auto=format&fit=crop&w=1000&q=80',imageAlt:'Government buildings in a capital city',minutesAgo:60},
- {category:'companies',title:'Leadership teams adapt to a more deliberate deal cycle',slug:'demo-company-outlook',description:'A fictional companies report on strategy, investment and the decisions shaping corporate outlooks.',content:'This sample provides demonstration copy for the companies section. It contains no real company claims or market-moving information.\n\nA published newsroom article should include its sources and reporting methodology.',imagePath:'https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1000&q=80',imageAlt:'Modern office meeting room',minutesAgo:120},
- {category:'markets',title:'Investors look for resilience across a shifting market cycle',slug:'demo-market-cycle',description:'An illustrative markets note on risk, resilience and the questions investors are asking.',content:'This fictional sample demonstrates the markets article layout. It is not investment advice and makes no claim about actual market conditions.',imagePath:'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1000&q=80',imageAlt:'Abstract market chart display',minutesAgo:180},
- {category:'technology',title:'The infrastructure questions behind the AI investment boom',slug:'demo-ai-infrastructure',description:'A demonstration technology feature considers power, compute and the next phase of AI investment.',content:'This sample technology feature is fictional and is supplied for preview only. Replace it with independently reported and fact-checked content before launch.',imagePath:'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1000&q=80',imageAlt:'Electronic circuit board detail',minutesAgo:240},
- {category:'world',title:'SAMPLE — Add your global affairs headline',slug:'demo-global-affairs',description:'Placeholder copy for the world coverage section. Replace this headline and standfirst in the editorial desk.',content:'This clearly labeled demonstration story is here to fill the homepage layout while the newsroom is being prepared. Replace the headline, summary, image, and article text with verified reporting before launch.',imagePath:'https://images.unsplash.com/photo-1524666041070-9a8768337a64?auto=format&fit=crop&w=1000&q=80',imageAlt:'Aerial view of a world city',minutesAgo:300},
- {category:'economy',title:'SAMPLE — Add your economy headline',slug:'demo-economy-briefing',description:'Placeholder copy for an additional economy story. Replace this headline and standfirst in the editorial desk.',content:'This clearly labeled demonstration story is here to fill the latest news briefing. Replace it with sourced reporting, a verified headline, and the final article copy before launch.',imagePath:'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1000&q=80',imageAlt:'Financial charts on a computer display',minutesAgo:360},
- {category:'companies',title:'SAMPLE — Add your business headline',slug:'demo-business-briefing',description:'Placeholder copy for a second companies story. Replace this headline and standfirst in the editorial desk.',content:'This clearly labeled demonstration story provides another card for the home page and latest news feed. Replace it with verified business reporting before launch.',imagePath:'https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=1000&q=80',imageAlt:'Sunlit modern office interior',minutesAgo:420}
+const demoArticles = [
+  {
+    category: 'politics',
+    title: 'Policy choices put long-term investment in focus',
+    slug: 'demo-policy-investment-outlook',
+    description: 'A fictional briefing on the questions public leaders weigh when building durable investment plans.',
+    content: 'This demonstration story uses a fictional policy discussion to preview the Politics section. Its events and claims are not real reporting. Replace it with verified coverage, clear sourcing, and editorial review before publication.',
+    imagePath: 'https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?auto=format&fit=crop&w=1000&q=80',
+    imageAlt: 'Government buildings in a capital city',
+    minutesAgo: 0,
+  },
+  {
+    category: 'companies',
+    title: 'Boards revisit priorities as companies plan for steady growth',
+    slug: 'demo-boardroom-growth-plans',
+    description: 'A sample companies story considers how leadership teams set priorities through an uncertain planning cycle.',
+    content: 'This fictional demonstration story previews company coverage and makes no claims about real businesses. Replace it with sourced reporting, named companies, and verified details before publication.',
+    imagePath: 'https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1000&q=80',
+    imageAlt: 'Modern office meeting room',
+    minutesAgo: 15,
+  },
+  {
+    category: 'markets',
+    title: 'Investors weigh liquidity as market conditions shift',
+    slug: 'demo-market-liquidity-outlook',
+    description: 'A fictional markets note on liquidity, risk appetite, and the signals investors may follow.',
+    content: 'This sample markets article is fictional and is included only to preview the site layout. It is not investment advice and does not describe actual market conditions.',
+    imagePath: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1000&q=80',
+    imageAlt: 'Abstract market chart display',
+    minutesAgo: 30,
+  },
 ];
 
-async function seedDemoContent(pool){
- const [categoryRows]=await pool.query('SELECT c.slug FROM categories c JOIN articles a ON a.category_id=c.id WHERE a.status="published" GROUP BY c.slug');
- const publishedCategories=new Set(categoryRows.map(row=>row.slug));
- const [[{total}]] = await pool.query('SELECT COUNT(*) AS total FROM articles WHERE status="published"');
- const [[{featuredCount}]] = await pool.query('SELECT COUNT(*) AS featuredCount FROM articles WHERE status="published" AND is_featured=1');
- let count=Number(total),hasFeature=Number(featuredCount)>0,added=0;
- for(const article of demoArticles){
-  const needsCategory=!publishedCategories.has(article.category);
-  const needsFeature=!!article.featured&&!hasFeature;
-  if(!needsCategory&&!needsFeature&&count>=7)continue;
-  const [categories]=await pool.query('SELECT id FROM categories WHERE slug=? LIMIT 1',[article.category]);
-  if(!categories.length)continue;
-  const featured=!!article.featured&&!hasFeature;
-  const [result]=await pool.query('INSERT IGNORE INTO articles(category_id,title,slug,description,content,image_path,image_alt,author,status,is_featured,published_at) VALUES(?,?,?,?,?,?,?,?,?,?,DATE_SUB(NOW(), INTERVAL '+Math.max(0,Math.trunc(article.minutesAgo))+' MINUTE))',[categories[0].id,article.title,article.slug,article.description,article.content,article.imagePath,article.imageAlt,'JPMorgan Demonstration Desk','published',featured]);
-  if(result.affectedRows){count++;added++;publishedCategories.add(article.category);if(featured)hasFeature=true}
- }
- if(added)console.log('Added '+added+' clearly labeled demonstration stories for empty newsroom sections.');
+async function seedDemoContent(pool) {
+  for (const article of demoArticles) {
+    const [categories] = await pool.query('SELECT id FROM categories WHERE slug=? LIMIT 1', [article.category]);
+    if (!categories.length) continue;
+
+    const minutes = Math.max(0, Math.trunc(article.minutesAgo));
+    const [result] = await pool.query(
+      "INSERT INTO articles(category_id,title,slug,description,content,image_path,image_alt,author,status,is_featured,published_at) VALUES(?,?,?,?,?,?,?,?,?,FALSE,NOW() - INTERVAL '" + minutes + " minutes') ON CONFLICT(slug) DO NOTHING",
+      [categories[0].id, article.title, article.slug, article.description, article.content, article.imagePath, article.imageAlt, 'JPMorgan Demonstration Desk', 'published'],
+    );
+    if (result.affectedRows) console.log('Added a clearly labeled demonstration story for ' + article.category + '.');
+  }
 }
 
-module.exports=seedDemoContent;
+module.exports = seedDemoContent;
