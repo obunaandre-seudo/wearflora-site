@@ -28,7 +28,10 @@
       '</p><p class="byline">BY ' + N.escape(article.author || 'Editorial Desk') +
       '</p></div>' + (article.imagePath
         ? '<figure><img src="' + N.escape(article.imagePath) + '" alt="' +
-          N.escape(article.imageAlt || article.title) + '"></figure>'
+          N.escape(article.imageAlt || article.title) + '">' +
+          (article.slug === 'inheritance-claim-consumer-warning'
+            ? '<figcaption>Publisher-supplied image; not independently verified as the incident described.</figcaption>'
+            : '') + '</figure>'
         : '') + '<div class="article-body">' + body + '</div></article></main>';
   } catch (error) {
     root.innerHTML = '<div class="article-back"><a href="/news.html">&larr; BACK TO LATEST</a></div>' +
