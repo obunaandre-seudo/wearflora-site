@@ -1,1 +1,71 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#111"><title>Editorial Desk — The Daily Brief</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/css/base.css"><link rel="stylesheet" href="/css/admin.css"><script defer src="/js/admin.js"></script></head><body class="admin-page"><header class="admin-brand"><a href="/"><span class="brand-mark">D<span>.</span></span><span class="brand-word">THE DAILY BRIEF</span></a><span>EDITORIAL DESK</span><button id="logout-button" class="logout-button">SIGN OUT ↗</button></header><main class="dashboard wrap"><div class="dashboard-title"><div><span class="section-kicker">PUBLISHING</span><h1>Editorial desk</h1></div><button id="new-article" class="button-light">+ NEW STORY</button></div><div class="dashboard-layout"><section class="story-manager"><div class="manager-heading"><h2>Stories</h2><span id="story-count">—</span></div><div id="admin-story-list" class="admin-story-list">Loading your stories…</div></section><section class="editor-panel"><div class="manager-heading"><h2 id="form-heading">Create a story</h2><button id="cancel-edit" class="cancel-edit" hidden>Cancel edit</button></div><form id="article-form"><input type="hidden" name="id"><label>Headline<input name="title" required maxlength="240"></label><label>Standfirst<textarea name="description" rows="3" required maxlength="500"></textarea></label><div class="form-row"><label>Section<select name="categoryId" required></select></label><label>Byline<input name="author" maxlength="120" value="The Daily Brief Editorial"></label></div><label>Full story<textarea name="content" rows="11" required placeholder="Write your article. Use a blank line to start a new paragraph."></textarea></label><label>Story image<input id="image-file" type="file" accept="image/jpeg,image/png,image/webp,image/gif"><small>JPG, PNG, WebP or GIF · up to 5 MB</small></label><div id="image-preview" class="image-preview" hidden><img alt="Article image preview"><button type="button" id="remove-image">REMOVE IMAGE</button></div><input type="hidden" name="imagePath"><label>Image description<input name="imageAlt" maxlength="240"></label><div class="publish-options"><label class="check-label"><input type="checkbox" name="featured"> Feature on the homepage</label><label>Publication status<select name="status"><option value="draft">Save as draft</option><option value="published">Publish now</option></select></label></div><p id="article-status" aria-live="polite"></p><div class="form-actions"><button id="save-article" class="button-light">SAVE STORY</button></div></form></section></div></main></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#111210">
+  <title>Editorial Desk — The Daily Brief</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/admin.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <script defer src="/js/admin.js"></script>
+</head>
+<body class="admin-page dashboard-page">
+  <header class="admin-brand dashboard-brand">
+    <a href="/" aria-label="The Daily Brief home">
+      <span class="brand-mark">D<span>.</span></span>
+      <span class="brand-word">THE DAILY BRIEF</span>
+    </a>
+    <div class="workspace-label"><span></span> EDITORIAL WORKSPACE</div>
+    <button id="logout-button" class="logout-button" type="button">SIGN OUT <span aria-hidden="true">↗</span></button>
+  </header>
+  <main class="dashboard dashboard-wrap">
+    <section class="dashboard-heading" aria-labelledby="dashboard-title">
+      <div>
+        <span class="section-kicker">PUBLISHING WORKSPACE</span>
+        <h1 id="dashboard-title">Editorial desk</h1>
+        <p>Shape the next edition. Draft, refine, and publish stories from here.</p>
+      </div>
+      <button id="new-article" class="button-light" type="button"><span aria-hidden="true">＋</span> NEW STORY</button>
+    </section>
+    <div class="dashboard-layout">
+      <section class="story-manager dashboard-card" aria-labelledby="stories-title">
+        <div class="manager-heading">
+          <div><span class="section-kicker">YOUR CONTENT</span><h2 id="stories-title">Stories</h2></div>
+          <span id="story-count" class="story-count">—</span>
+        </div>
+        <div id="admin-story-list" class="admin-story-list" aria-live="polite">Loading your stories…</div>
+      </section>
+      <section class="editor-panel dashboard-card" aria-labelledby="form-heading">
+        <div class="manager-heading editor-heading">
+          <div><span class="section-kicker">STORY BUILDER</span><h2 id="form-heading">Create a story</h2></div>
+          <button id="cancel-edit" class="cancel-edit" type="button" hidden>Cancel edit</button>
+        </div>
+        <form id="article-form">
+          <input type="hidden" name="id">
+          <label>Headline<input name="title" required maxlength="240" placeholder="Write a clear, compelling headline"></label>
+          <label>Standfirst<textarea name="description" rows="3" required maxlength="500" placeholder="Summarize the story in a sentence or two"></textarea></label>
+          <div class="form-row">
+            <label>Section<select name="categoryId" required></select></label>
+            <label>Byline<input name="author" maxlength="120" value="The Daily Brief Editorial" placeholder="Author name"></label>
+          </div>
+          <label>Full story<textarea name="content" rows="11" required placeholder="Write your article. Use a blank line to start a new paragraph."></textarea></label>
+          <label class="upload-label">Story image<input id="image-file" type="file" accept="image/jpeg,image/png,image/webp,image/gif"><small>JPG, PNG, WebP or GIF · up to 5 MB</small></label>
+          <div id="image-preview" class="image-preview" hidden><img alt="Article image preview"><button type="button" id="remove-image">REMOVE IMAGE</button></div>
+          <input type="hidden" name="imagePath">
+          <label>Image description<input name="imageAlt" maxlength="240" placeholder="Describe the image for readers using a screen reader"></label>
+          <div class="publish-options">
+            <label class="check-label"><input type="checkbox" name="featured"><span>Feature on the homepage</span></label>
+            <label>Publication status<select name="status"><option value="draft">Save as draft</option><option value="published">Publish now</option></select></label>
+          </div>
+          <p id="article-status" aria-live="polite" role="status"></p>
+          <div class="form-actions"><button id="save-article" class="button-light" type="submit">SAVE STORY <span aria-hidden="true">→</span></button></div>
+        </form>
+      </section>
+    </div>
+  </main>
+</body>
+</html>
