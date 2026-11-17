@@ -2,7 +2,7 @@
 -- same three stories automatically on first API access.
 INSERT INTO articles(category_id,title,slug,description,content,image_path,image_alt,author,status,is_featured,published_at)
 SELECT c.id, s.title, s.slug, s.description, s.content, s.image_path, s.image_alt,
-       'JPMorgan Demonstration Desk', 'published', FALSE, NOW() - s.age
+       'The Daily Brief Demonstration Desk', 'published', FALSE, NOW() - s.age
 FROM (VALUES
   ('politics', 'Policy choices put long-term investment in focus', 'demo-policy-investment-outlook',
    'A fictional briefing on the questions public leaders weigh when building durable investment plans.',

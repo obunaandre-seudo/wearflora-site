@@ -1,8 +1,8 @@
-# JPMorgan Newsroom
+# The Daily Brief
 
 This repository runs a lightweight editorial news site with HTML, CSS, vanilla JavaScript, Node.js, Express and PostgreSQL.
 
-See [JPMORGAN-README.md](JPMORGAN-README.md) for local setup, database configuration, and publishing instructions.
+See [THE-DAILY-BRIEF-README.md](THE-DAILY-BRIEF-README.md) for local setup, database configuration, and publishing instructions.
 
 ## Deploying to Vercel
 

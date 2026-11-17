@@ -39,7 +39,7 @@ async function seedDemoContent(pool) {
     const minutes = Math.max(0, Math.trunc(article.minutesAgo));
     const [result] = await pool.query(
       "INSERT INTO articles(category_id,title,slug,description,content,image_path,image_alt,author,status,is_featured,published_at) VALUES(?,?,?,?,?,?,?,?,?,FALSE,NOW() - INTERVAL '" + minutes + " minutes') ON CONFLICT(slug) DO NOTHING",
-      [categories[0].id, article.title, article.slug, article.description, article.content, article.imagePath, article.imageAlt, 'JPMorgan Demonstration Desk', 'published'],
+      [categories[0].id, article.title, article.slug, article.description, article.content, article.imagePath, article.imageAlt, 'The Daily Brief Demonstration Desk', 'published'],
     );
     if (result.affectedRows) console.log('Added a clearly labeled demonstration story for ' + article.category + '.');
   }

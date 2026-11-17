@@ -1,5 +1,5 @@
 {
-  "name": "jpmorgan-newsroom",
+  "name": "the-daily-brief",
   "version": "1.0.0",
   "private": true,
   "description": "Dark editorial financial news site with a PostgreSQL publishing desk",

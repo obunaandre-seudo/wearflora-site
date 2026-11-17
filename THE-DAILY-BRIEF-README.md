@@ -1,4 +1,4 @@
-# JPMorgan Newsroom
+# The Daily Brief Newsroom
 
 A lightweight newsroom for this repository. The public site uses HTML, CSS and vanilla JavaScript; the single Express server serves pages and JSON APIs, with PostgreSQL storing articles, categories, editors, newsletter sign-ups and sessions.
 

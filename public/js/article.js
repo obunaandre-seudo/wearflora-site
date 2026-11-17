@@ -10,7 +10,7 @@
 
   try {
     const article = await N.fetch('/api/articles/' + encodeURIComponent(slug));
-    document.title = article.title + ' — JPMorgan';
+    document.title = article.title + ' — The Daily Brief';
     const linkify = (text) => N.escape(text).replace(
       /https:\/\/[^\s<>]+/g,
       (url) => '<a href="' + url + '" target="_blank" rel="noopener noreferrer">' + url + '</a>',

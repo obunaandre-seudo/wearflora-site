@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS articles (
   content TEXT NOT NULL,
   image_path VARCHAR(500),
   image_alt VARCHAR(240),
-  author VARCHAR(120) NOT NULL DEFAULT 'JPMorgan Editorial',
+  author VARCHAR(120) NOT NULL DEFAULT 'The Daily Brief Editorial',
   status VARCHAR(12) NOT NULL DEFAULT 'draft' CHECK (status IN ('draft', 'published')),
   is_featured BOOLEAN NOT NULL DEFAULT FALSE,
   published_at TIMESTAMPTZ,
