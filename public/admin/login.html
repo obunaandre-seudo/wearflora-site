@@ -1,1 +1,57 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#111"><title>Editor sign in — The Daily Brief</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/css/base.css"><link rel="stylesheet" href="/css/admin.css"><script defer src="/js/admin.js"></script></head><body class="admin-page"><header class="admin-brand"><a href="/"><span class="brand-mark">D<span>.</span></span><span class="brand-word">THE DAILY BRIEF</span></a><span>EDITORIAL DESK</span></header><main class="login-wrap"><span class="section-kicker">SECURE ACCESS</span><h1>Welcome back.</h1><p>Sign in to the editorial desk.</p><form id="login-form"><label>Email address<input name="email" type="email" required autocomplete="username"></label><label>Password<input name="password" type="password" required autocomplete="current-password"></label><button class="button-light">SIGN IN →</button><p id="login-status" aria-live="polite"></p></form><a class="back-home" href="/">← BACK TO THE NEWSROOM</a></main></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#111210">
+  <title>Editor sign in — The Daily Brief</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/admin.css">
+  <link rel="stylesheet" href="/css/login.css">
+  <script defer src="/js/admin.js"></script>
+</head>
+<body class="admin-page login-page">
+  <header class="admin-brand">
+    <a href="/" aria-label="The Daily Brief home">
+      <span class="brand-mark">D<span>.</span></span>
+      <span class="brand-word">THE DAILY BRIEF</span>
+    </a>
+    <span class="admin-badge"><span></span> EDITOR ACCESS</span>
+  </header>
+  <main class="login-shell">
+    <section class="login-intro" aria-labelledby="intro-title">
+      <span class="section-kicker">THE DAILY BRIEF · EDITORIAL</span>
+      <h1 id="intro-title">The story<br>starts here.</h1>
+      <p>Sign in to shape the next edition. Manage drafts, prepare images, and publish stories from one focused workspace.</p>
+      <div class="login-edition" aria-hidden="true">
+        <span class="edition-rule"></span>
+        <span>INDEPENDENT REPORTING<br>GLOBAL PERSPECTIVE</span>
+      </div>
+    </section>
+    <section class="login-card" aria-labelledby="login-title">
+      <div class="login-card-mark" aria-hidden="true">D<span>.</span></div>
+      <span class="section-kicker">WELCOME BACK</span>
+      <h2 id="login-title">Sign in to your account</h2>
+      <p class="login-card-intro">Use your editor credentials to continue.</p>
+      <form id="login-form">
+        <label for="editor-email">Email address</label>
+        <input id="editor-email" name="email" type="email" required autocomplete="username" placeholder="name@publication.com">
+        <div class="password-label-row">
+          <label for="editor-password">Password</label>
+        </div>
+        <div class="password-field">
+          <input id="editor-password" name="password" type="password" required autocomplete="current-password" placeholder="Enter your password">
+          <button id="toggle-password" type="button" aria-label="Show password" aria-pressed="false">SHOW</button>
+        </div>
+        <button class="button-light login-submit" type="submit"><span>Sign in to dashboard</span><span aria-hidden="true">→</span></button>
+        <p id="login-status" aria-live="polite" role="status"></p>
+      </form>
+      <div class="login-card-footer"><span class="login-lock" aria-hidden="true">●</span> Authorized editors only</div>
+      <a class="back-home" href="/">← BACK TO THE NEWSROOM</a>
+    </section>
+  </main>
+</body>
+</html>
